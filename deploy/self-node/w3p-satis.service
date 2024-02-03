@@ -1,0 +1,23 @@
+# web3password  satis  daemons
+# Copyright: Copyright (c) 2024,  WEB3PASSWORD PTE. LTD.  All rights reserved.
+
+[Unit]
+Description=Web3Password Satis Daemons
+Before=network.target
+#After= local-fs.target systemd-journald.service network.target
+
+[Service]
+Type=simple
+ExecStart=
+RemainAfterExit=yes
+TimeoutSec=0
+
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Stop service
+TimeoutStopSec=10s
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

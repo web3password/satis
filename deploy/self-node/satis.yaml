@@ -1,0 +1,24 @@
+#################### app satis config ####################
+# official, audit, local
+running_mode: audit
+official_domain: https://data-us-0001.web3password.com
+official_domains:
+  - https://data-us-0001.web3password.com
+node:
+  token: token
+msg:
+  file: 62914560
+  api: 1048576
+log: /data/satis/logs
+#################### current http server config ####################
+http_server:
+  ip: 0.0.0.0
+  port: 8893
+#################### current grpc server config ####################
+server:
+  ip: 0.0.0.0
+  port: 8894
+  proto: tcp
+node_server: 127.0.0.1:8894
+personal_white_list:
+org_white_list:

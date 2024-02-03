@@ -1,0 +1,9 @@
+.idea/
+config.yaml
+cmd/satis_linux
+satis_*.log
+cmd/satis
+nohup.out
+vendor
+.DS_Store
+sync.sh

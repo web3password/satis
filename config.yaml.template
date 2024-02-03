@@ -1,0 +1,37 @@
+#################### app satis config ####################
+# official, audit, local
+running_mode: official
+official_domain: https://data-us-0001.web3password.com
+official_domains:
+ - https://data-us-0001.web3password.com
+
+w3p_api_request_log: false
+node:
+  token: token
+msg:
+  file: 62914560
+  api: 1048576
+log_dir: /data/app/satis/logs/
+
+#################### current http server config ####################
+http_server:
+  ip: 0.0.0.0
+  port: 9099
+  with_trace_id: true
+
+#################### current grpc server config ####################
+server:
+  enable_tls: true
+  tls_domain: "*.web3password.com"
+  ip: 0.0.0.0
+  port: 9098
+  proto: tcp
+
+tls:
+  ca: /data/app/crt/web3password-ca.crt
+  server:
+    crt: /data/app/crt/web3password-server.crt
+    key: /data/app/crt/web3password-server.key
+  client:
+    crt: /data/app/crt/web3password-client.crt
+    key: /data/app/crt/web3password-client.key
