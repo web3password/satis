@@ -170,7 +170,7 @@ func ParamsCheck() gin.HandlerFunc {
 			return
 		}
 
-		log.Logger.Info("satis handler request", log.String("params", request.ParamsStr), log.String("trace_id", nonce))
+		log.Logger.Info("satis handler request", log.String("params", request.ParamsStr), log.String("trace_id", nonce), log.Any("body-length", len(bytes)))
 		ctx.Set("request", request)
 		ctx.Next()
 	}
