@@ -239,6 +239,7 @@ type ShareFolder struct {
 	FolderName     []byte `json:"folder_name" bson:"folder_name"`
 	FolderOwner    string `json:"folder_owner" bson:"folder_owner"`
 	FolderMnemonic []byte `json:"folder_mnemonic" bson:"folder_mnemonic"`
+	FolderAuth     string `json:"folder_auth" bson:"folder_auth"`
 	Timestamp      int32  `json:"timestamp"  bson:"timestamp"`
 }
 
