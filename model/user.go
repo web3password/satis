@@ -677,6 +677,11 @@ func (r AdminGetOrgInfoParams) Check() bool {
 	if r.Timestamp == 0 {
 		return false
 	}
+
+	if len(r.Nonce) > util.W3PMaxNonceLength {
+		return false
+	}
+
 	return true
 }
 
@@ -691,6 +696,11 @@ func (r RegisterParams) Check() (string, bool) {
 	if r.Token != RegisterToken {
 		return "invalid token " + r.Token, false
 	}
+
+	if len(r.Nonce) > util.W3PMaxNonceLength {
+		return "invalid nonce", false
+	}
+
 	return "", true
 }
 
@@ -702,6 +712,10 @@ func (r InitializeParams) Check() bool {
 		return false
 	}
 	if r.Token != InitializeToken {
+		return false
+	}
+
+	if len(r.Nonce) > util.W3PMaxNonceLength {
 		return false
 	}
 	return true
@@ -718,9 +732,20 @@ func (r GetPersonalSignAddressParams) Check() (string, bool) {
 	if r.Token != GetPersonalSignAddressToken {
 		return "invalid token " + r.Token, false
 	}
-	if len(r.OfficialAddrs) == 0 {
-		return "empty official_addrs", false
+	if len(r.OfficialAddrs) == 0 || len(r.OfficialAddrs) > 10 {
+		return "invalid official_address list", false
 	}
+
+	if len(r.Nonce) > util.W3PMaxNonceLength {
+		return "invalid nonce or hash", false
+	}
+
+	for i := 0; i < len(r.OfficialAddrs); i++ {
+		if len(r.OfficialAddrs[i]) > util.W3PMaxNonceLength {
+			return "invalid official_addr " + r.OfficialAddrs[i], false
+		}
+	}
+
 	return "", true
 }
 
@@ -735,6 +760,11 @@ func (r GetVIPInfoParams) Check() (string, bool) {
 	if r.Token != GetVIPInfoToken {
 		return "invalid token " + r.Token, false
 	}
+
+	if len(r.Nonce) > util.W3PMaxNonceLength {
+		return "invalid nonce or hash", false
+	}
+
 	return "", true
 }
 
@@ -748,6 +778,9 @@ func (r GetUserInfoParams) Check() (string, bool) {
 	}
 	if r.Token != GetUserInfoToken {
 		return "invalid token " + r.Token, false
+	}
+	if len(r.Nonce) > util.W3PMaxNonceLength {
+		return "invalid nonce", false
 	}
 	return "", true
 }
@@ -763,6 +796,10 @@ func (c CheckTxParams) Check() (string, bool) {
 	}
 	if c.TxHash == "" {
 		return "empty hash", false
+	}
+
+	if len(c.Nonce) > util.W3PMaxNonceLength || len(c.OrgId) > util.W3PMaxNonceLength || len(c.TxHash) > util.W3PMaxNonceLength {
+		return "invalid nonce or orgid or txhash", false
 	}
 	return "", true
 }
@@ -783,6 +820,11 @@ func (c BatchCheckTxParams) Check(data []byte) (string, bool) {
 	if c.Token != IndexBatchCheckTxToken {
 		return "invalid token " + c.Token, false
 	}
+
+	if len(c.Nonce) > util.W3PMaxNonceLength || len(c.OrgId) > util.W3PMaxNonceLength || len(c.Hash) > util.W3PMaxNonceLength {
+		return "invalid nonce or orgid or hash", false
+	}
+
 	return "", true
 }
 
@@ -803,6 +845,11 @@ func (a AddCredentialParams) Check(data []byte) (string, bool) {
 	if a.ID == "" {
 		return "invalid id", false
 	}
+
+	if len(a.ID) > util.W3PMaxNonceLength || len(a.Nonce) > util.W3PMaxNonceLength || len(a.OrgId) > util.W3PMaxNonceLength || len(a.Hash) > util.W3PMaxNonceLength || len(data) > util.W3PMaxRecordLength {
+		return "invalid id or nonce or orgid or hash or record-length", false
+	}
+
 	return "", true
 }
 
@@ -820,6 +867,11 @@ func (c BatchAddCredentialParams) Check(data []byte) (string, bool) {
 	if c.Token != IndexBatchAddCredentialToken {
 		return "invalid token " + c.Hash, false
 	}
+
+	if len(c.Nonce) > util.W3PMaxNonceLength || len(c.OrgId) > util.W3PMaxNonceLength || len(c.Hash) > util.W3PMaxNonceLength || len(data) > util.W3PMaxBodyLength {
+		return "invalid nonce or orgid or hash or data-length", false
+	}
+
 	return "", true
 }
 
@@ -837,6 +889,11 @@ func (d DeleteCredentialParams) Check(data []byte) (string, bool) {
 	if d.ID == "" {
 		return "invalid id ", false
 	}
+
+	if len(d.ID) > util.W3PMaxNonceLength || len(d.Nonce) > util.W3PMaxNonceLength || len(d.OrgId) > util.W3PMaxNonceLength || len(d.Hash) > util.W3PMaxNonceLength || len(data) > util.W3PMaxNonceLength {
+		return "invalid id or nonce or orgid or hash or data-length", false
+	}
+
 	return "", true
 }
 
@@ -854,6 +911,11 @@ func (c BatchDeleteCredentialParams) Check(data []byte) (string, bool) {
 	if c.Token != IndexBatchDeleteCredentialToken {
 		return "invalid token " + c.Token, false
 	}
+
+	if len(c.Nonce) > util.W3PMaxNonceLength || len(c.OrgId) > util.W3PMaxNonceLength || len(c.Hash) > util.W3PMaxNonceLength || len(data) > util.W3PMaxBodyLength {
+		return "invalid nonce or orgid or hash", false
+	}
+
 	return "", true
 }
 
@@ -871,6 +933,11 @@ func (g GetCredentialParams) Check() (string, bool) {
 	if g.Token != GetCredentialToken {
 		return "invalid token " + g.Token, false
 	}
+
+	if len(g.ID) > util.W3PMaxNonceLength || len(g.Nonce) > util.W3PMaxNonceLength || len(g.OrgId) > util.W3PMaxNonceLength {
+		return "invalid id or nonce or orgid", false
+	}
+
 	return "", true
 }
 
@@ -885,6 +952,11 @@ func (d DeleteAllCredentialParams) Check() (string, bool) {
 	if d.Token != DeleteAllCredentialToken {
 		return "invalid token " + d.Token, false
 	}
+
+	if len(d.Nonce) > util.W3PMaxNonceLength || len(d.OrgId) > util.W3PMaxNonceLength {
+		return "invalid nonce or orgid", false
+	}
+
 	return "", true
 }
 
@@ -899,6 +971,11 @@ func (g GetAllCredentialTimestampParams) Check() (string, bool) {
 	if g.Token != GetAllCredentialTimestampToken {
 		return "invalid token " + g.Token, false
 	}
+
+	if len(g.Nonce) > util.W3PMaxNonceLength || len(g.OrgId) > util.W3PMaxNonceLength {
+		return "invalid nonce or orgid", false
+	}
+
 	return "", true
 }
 
@@ -913,12 +990,18 @@ func (g GetCredentialListParams) Check() (string, bool) {
 	if len(g.IDs) == 0 {
 		return "invalid ids", false
 	}
-	if len(g.IDs) > 500 {
-		return "max length ids is 500", false
+	if len(g.IDs) > util.W3PMaxBatchRecordNumber {
+		msg := fmt.Sprintf("max length ids is %d", util.W3PMaxBatchRecordNumber)
+		return msg, false
 	}
 	if g.Token != GetCredentialListToken {
 		return "invalid token " + g.Token, false
 	}
+
+	if len(g.Nonce) > util.W3PMaxNonceLength || len(g.OrgId) > util.W3PMaxNonceLength {
+		return "invalid nonce or orgid", false
+	}
+
 	return "", true
 }
 
@@ -935,6 +1018,11 @@ func (g GetVersionDescParams) Check() bool {
 	if g.Token != VersionDescToken {
 		return false
 	}
+
+	if len(g.Nonce) > util.W3PMaxNonceLength {
+		return false
+	}
+
 	return true
 }
 
@@ -957,6 +1045,11 @@ func (a AdminAddOrUpdateMemberParams) Check() bool {
 	//if a.Token != AdminAddMemberToken {
 	//	return false
 	//}
+
+	if len(a.Nonce) > util.W3PMaxNonceLength || len(a.TagAddress) > util.W3PMaxNonceLength || len(a.AdminShareMnemonic) > util.W3PMaxGeneralLenth || len(a.MemberShareMnemonic) > util.W3PMaxGeneralLenth || len(a.MemberData) > util.W3PMaxGeneralLenth {
+		return false
+	}
+
 	return true
 }
 
@@ -974,6 +1067,11 @@ func (r AdminRegisterParams) Check() (string, bool) {
 	if r.Auth == "" {
 		return "invalid auth " + r.Auth, false
 	}
+
+	if len(r.Nonce) > util.W3PMaxNonceLength || len(r.Auth) > util.W3PMaxGeneralLenth {
+		return "invalid nonce or auth", false
+	}
+
 	return "", true
 }
 
@@ -985,6 +1083,9 @@ func (t TransferSuperAdminParams) Check() bool {
 		return false
 	}
 	if t.Token != AdminTransferSuperAdminToken {
+		return false
+	}
+	if len(t.Nonce) > util.W3PMaxNonceLength || len(t.Hash) > util.W3PMaxNonceLength {
 		return false
 	}
 	return true
@@ -1000,6 +1101,10 @@ func (t OperationHistoryParams) Check() bool {
 	if t.Token != AdminOperationHistoryToken {
 		return false
 	}
+
+	if len(t.Nonce) > util.W3PMaxNonceLength || len(t.Hash) > util.W3PMaxNonceLength || len(t.ViewAddress) > util.W3PMaxNonceLength {
+		return false
+	}
 	return true
 }
 
@@ -1008,10 +1113,17 @@ func (t AdminAuthorizationParams) Check() bool {
 		return false
 	}
 
+	if len(t.Nonce) > util.W3PMaxNonceLength {
+		return false
+	}
+
 	if t.Timestamp == 0 {
 		return false
 	}
 	if t.Token != AadminAuthorizationToken {
+		return false
+	}
+	if len(t.Nonce) > util.W3PMaxNonceLength {
 		return false
 	}
 	return true
@@ -1030,6 +1142,11 @@ func (a AdminGetMemberListParams) Check() bool {
 	if a.Token != AdminGetMemberListToken {
 		return false
 	}
+
+	if len(a.Nonce) > util.W3PMaxNonceLength || len(a.TagAddress) > util.W3PMaxNonceLength {
+		return false
+	}
+
 	return true
 }
 
@@ -1046,6 +1163,11 @@ func (g GetAdminMnemonicParams) Check() bool {
 	if g.Token != AdminGetAdminMnemonicToken {
 		return false
 	}
+
+	if len(g.Nonce) > util.W3PMaxNonceLength || len(g.TagAddress) > util.W3PMaxNonceLength {
+		return false
+	}
+
 	return true
 }
 
@@ -1062,6 +1184,11 @@ func (a AdminBatchImportMemberParams) Check() bool {
 	if len(a.MemberList) < 0 {
 		return false
 	}
+
+	if len(a.Nonce) > util.W3PMaxNonceLength {
+		return false
+	}
+
 	return true
 }
 
@@ -1081,6 +1208,11 @@ func (a AdminRemoveMemberParams) Check() bool {
 	if a.MemberAddress == "" {
 		return false
 	}
+
+	if len(a.Nonce) > util.W3PMaxNonceLength || len(a.TagAddress) > util.W3PMaxNonceLength || len(a.MemberAddress) > util.W3PMaxNonceLength {
+		return false
+	}
+
 	return true
 }
 
@@ -1103,6 +1235,11 @@ func (s StorageReportParams) Check() (string, bool) {
 		msg := fmt.Sprintf("invalid timestamp server timestamp=%d, client timestamp=%d", time.Now().Unix(), s.Timestamp)
 		return msg, false
 	}
+
+	if len(s.Nonce) > util.W3PMaxNonceLength {
+		return "invalid nonce", false
+	}
+
 	return "", true
 }
 
@@ -1119,5 +1256,10 @@ func (s StorageStatParams) Check() (string, bool) {
 		msg := fmt.Sprintf("invalid timestamp server timestamp=%d, client timestamp=%d", time.Now().Unix(), s.Timestamp)
 		return msg, false
 	}
+
+	if len(s.Nonce) > util.W3PMaxNonceLength {
+		return "invalid nonce", false
+	}
+
 	return "", true
 }

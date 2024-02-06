@@ -22,7 +22,15 @@ import (
 )
 
 const (
-	W3PTimeout = 12
+	W3PTimeout              = 12
+	W3PMaxNonceLength       = 100
+	W3PMaxGeneralLenth      = 1024
+	W3PMax2048Lenth         = 2048
+	W3PMaxRecordLength      = 2500
+	W3PMax4096Length        = 4096
+	W3PMaxBatchRecordNumber = 500
+	W3PMaxBodyLength        = 2 * 1024 * 1024
+	W3PMaxAttachmentLength  = 60 * 1024 * 1024
 )
 
 // CheckTimestamp check timestamp

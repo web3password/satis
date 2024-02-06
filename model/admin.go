@@ -36,6 +36,11 @@ func (s AdminCommonParams) Check(token string, timestamp int64, data []byte) (st
 	if !tools.IsValidAddress(s.Address) {
 		return "invalid address " + s.Address, false
 	}
+
+	if len(s.Nonce) > util.W3PMaxNonceLength || len(s.Hash) > util.W3PMaxNonceLength {
+		return "invalid nonce or hash", false
+	}
+
 	if s.Timestamp == 0 {
 		msg := fmt.Sprintf("invalid timestamp , req timestamp is zero : %d", s.Timestamp)
 		return msg, false

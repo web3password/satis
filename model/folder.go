@@ -86,6 +86,10 @@ func (f ShareFolderParams) Check(data []byte) (string, bool) {
 		return "invalid empty data ", false
 	}
 
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.Hash) > util.W3PMaxNonceLength || len(data) > util.W3PMax2048Lenth {
+		return "invalid nonce or hash data-length", false
+	}
+
 	if isEqual, serverHash := tools.CompareHash(data, f.Hash); !isEqual {
 		return fmt.Sprintf("invalid hash, server hash=%s, client hash=%s", serverHash, f.Hash), false
 	}
@@ -97,6 +101,11 @@ func (f ShareFolderUpdateParams) Check(data []byte) (string, bool) {
 	if f.Token != ShareFolderUpdateToken {
 		return "invalid token " + f.Token, false
 	}
+
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.Hash) > util.W3PMaxNonceLength || len(data) > util.W3PMax2048Lenth {
+		return "invalid nonce or hash or data-length", false
+	}
+
 	return "", true
 }
 
@@ -128,6 +137,10 @@ func (s ShareFolderCommonParams) Check(token string, timestamp int64, data []byt
 	}
 	if s.Token != token {
 		return "invalid token " + s.Token, false
+	}
+
+	if len(s.Nonce) > util.W3PMaxNonceLength || len(s.Hash) > util.W3PMaxNonceLength || len(data) > util.W3PMax2048Lenth {
+		return "invalid nonce or hash or data-length", false
 	}
 
 	if len(data) > 0 {
@@ -192,6 +205,10 @@ func (f ShareFolderAddRecordParams) Check(data []byte) (string, bool) {
 		return "invalid empty data ", false
 	}
 
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.Hash) > util.W3PMaxNonceLength {
+		return "invalid nonce or hash", false
+	}
+
 	if isEqual, serverHash := tools.CompareHash(data, f.Hash); !isEqual {
 		return fmt.Sprintf("invalid hash, server hash=%s, client hash=%s", serverHash, f.Hash), false
 	}
@@ -225,6 +242,10 @@ func (f ShareFolderDeleteRecordParams) Check(data []byte) (string, bool) {
 
 	if len(data) == 0 {
 		return "invalid empty data ", false
+	}
+
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.Hash) > util.W3PMaxNonceLength {
+		return "invalid nonce or hash", false
 	}
 
 	if isEqual, serverHash := tools.CompareHash(data, f.Hash); !isEqual {

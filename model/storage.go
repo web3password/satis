@@ -111,6 +111,14 @@ func (f FileUploadReqParams) Check(data []byte) (string, bool) {
 		return "invalid empty data ", false
 	}
 
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.Rid) > util.W3PMaxNonceLength || len(f.OrgId) > util.W3PMaxNonceLength || len(f.Sha256) > util.W3PMaxNonceLength {
+		return "invalid nonce or rid or orgid or hash", false
+	}
+
+	if len(data) > util.W3PMaxAttachmentLength {
+		return "invalid attachment size", false
+	}
+
 	if isEqual, serverHash := tools.CompareHash(data, f.Sha256); !isEqual {
 		return fmt.Sprintf("invalid hash, server hash=%s, client hash(sha256)=%s", serverHash, f.Sha256), false
 	}
@@ -138,6 +146,10 @@ func (f FileDownloadReqParams) Check() (string, bool) {
 
 	if len(f.OrgId) == 0 {
 		return "invalid org_id", false
+	}
+
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.Rid) > util.W3PMaxNonceLength || len(f.OrgId) > util.W3PMaxNonceLength || len(f.Cid) > util.W3PMaxNonceLength {
+		return "invalid nonce or rid or orgid or cid", false
 	}
 
 	return "", true
@@ -170,6 +182,10 @@ func (f FileReportReqParams) Check() (string, bool) {
 		return "invalid org_id", false
 	}
 
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.Rid) > util.W3PMaxNonceLength || len(f.OrgId) > util.W3PMaxNonceLength || len(f.Hash) > util.W3PMaxNonceLength {
+		return "invalid nonce or rid or orgid or hash", false
+	}
+
 	return "", true
 }
 
@@ -188,6 +204,10 @@ func (f FileAttachmentReqParams) Check() (string, bool) {
 	}
 	if len(f.OrgId) == 0 {
 		return "invalid org_id", false
+	}
+
+	if len(f.Nonce) > util.W3PMaxNonceLength || len(f.OrgId) > util.W3PMaxNonceLength || len(f.Hash) > util.W3PMaxNonceLength {
+		return "invalid nonce or orgid or hash", false
 	}
 
 	return "", true

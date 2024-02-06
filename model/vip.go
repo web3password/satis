@@ -39,6 +39,10 @@ func (v VipGetConfigParams) Check() (string, bool) {
 		return msg, false
 	}
 
+	if len(v.Nonce) > util.W3PMaxNonceLength {
+		return "invalid nonce", false
+	}
+
 	return "", true
 }
 
@@ -64,6 +68,10 @@ func (v VipSubscriptionListParams) Check() (string, bool) {
 	if !util.CheckTimestamp(v.Timestamp) {
 		msg := fmt.Sprintf("invalid timestamp server timestamp=%d, client timestamp=%d", time.Now().Unix(), v.Timestamp)
 		return msg, false
+	}
+
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.OrgId) > util.W3PMaxNonceLength || len(v.Auth) > util.W3PMaxGeneralLenth {
+		return "invalid nonce or orgid or auth", false
 	}
 
 	if !v.App.Check() {
@@ -123,6 +131,10 @@ func (v VipPaymentListParams) Check() (string, bool) {
 		return msg, false
 	}
 
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.Auth) > util.W3PMaxGeneralLenth {
+		return "invalid nonce or auth", false
+	}
+
 	if !v.App.Check() {
 		msg := fmt.Sprintf("invalid request params app=%s", v.App)
 		return msg, false
@@ -159,6 +171,10 @@ func (v VipCreateOrderParams) Check() (string, bool) {
 	if !util.CheckTimestamp(v.Timestamp) {
 		msg := fmt.Sprintf("invalid timestamp server timestamp=%d, client timestamp=%d", time.Now().Unix(), v.Timestamp)
 		return msg, false
+	}
+
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.Auth) > util.W3PMaxGeneralLenth {
+		return "invalid nonce or auth", false
 	}
 
 	if !v.App.Check() {
@@ -239,6 +255,10 @@ func (v VipCheckOrderParams) Check() (string, bool) {
 		}
 	}
 
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.OrgId) > util.W3PMaxNonceLength || len(v.PersonalAuth) > util.W3PMaxGeneralLenth || len(v.OriginData) > util.W3PMaxRecordLength {
+		return "invalid nonce or orgid or auth or org-data", false
+	}
+
 	return "", true
 }
 
@@ -283,6 +303,10 @@ func (v VipAppleVerifyReceiptParams) Check() (string, bool) {
 		return msg, false
 	}
 
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.OrgId) > util.W3PMaxNonceLength || len(v.PersonalAuth) > util.W3PMaxGeneralLenth || len(v.Receipt) > util.W3PMaxBodyLength {
+		return "invalid nonce or orgid or auth or receipt", false
+	}
+
 	return "", true
 }
 
@@ -322,6 +346,10 @@ func (v GetDiscountCodeInfoParams) Check() (string, bool) {
 		return msg, false
 	}
 
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.DiscountCode) > util.W3PMaxNonceLength {
+		return "invalid nonce or promo-code", false
+	}
+
 	return "", true
 }
 
@@ -350,6 +378,10 @@ func (v GetOrderListParams) Check() (string, bool) {
 	}
 	if v.PersonalAuth == "" {
 		return "invalid params personal_auth " + v.PersonalAuth, false
+	}
+
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.PersonalAuth) > util.W3PMaxGeneralLenth {
+		return "invalid nonce or auth", false
 	}
 
 	return "", true
@@ -394,6 +426,10 @@ func (v VipIOSPromotionSignParams) Check() (string, bool) {
 
 	if v.PersonalAuth == "" {
 		return fmt.Sprintf("invalid params personal_auth(%v)", v.PersonalAuth), false
+	}
+
+	if len(v.Nonce) > util.W3PMaxNonceLength || len(v.PersonalAuth) > util.W3PMaxGeneralLenth {
+		return "invalid nonce or auth", false
 	}
 
 	return "", true
