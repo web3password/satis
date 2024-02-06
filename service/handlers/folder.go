@@ -393,6 +393,7 @@ func ShareFolderFolderList(ctx *gin.Context) {
 			FolderOwner:    item.FolderOwner,
 			FolderMnemonic: item.FolderMnemonic,
 			Timestamp:      item.GetTimestamp(),
+			FolderAuth:     item.FolderAuth,
 		})
 	}
 	wrapData := model.ShareFolderListRsp{
